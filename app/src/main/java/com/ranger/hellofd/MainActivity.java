@@ -2,21 +2,26 @@ package com.ranger.hellofd;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Adapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ListView listView;
+    ItemDao itemDao;
 
-    private List<String> listText;
+    private ListView listView;
+    private FloatingActionButton addBtn;
+
+    private List<TodoItem> todoItems;
 
     private ListViewAdapter adapter;
 
@@ -27,20 +32,43 @@ public class MainActivity extends AppCompatActivity {
 
         initView();
         initData();
+    }
 
-        Log.d("MainActivity", "hello");
+    @SuppressLint("MissingSuperCall")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            String content = data.getStringExtra("content");
+            itemDao.add(content);
+            itemDao.loadAll(todoItems);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     void initView() {
         listView = findViewById(R.id.lv_text_view);
-        listText = new ArrayList<>();
+        todoItems = new ArrayList<>();
+        addBtn = findViewById(R.id.add_btn);
+
+        addBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
+            startActivityForResult(intent, 1);
+        });
     }
 
     void initData() {
-        for (int i = 0; i < 20; i++) {
-            listText.add("事件" + i);
+        itemDao = new ItemDao(this);
+        itemDao.deleteAll();
+
+        for (int i = 0; i < 5; i++) {
+            itemDao.add("事件" + i, i % 2 == 0);
         }
-        adapter = new ListViewAdapter(listText, this);
+
+        itemDao.loadAll(todoItems);
+
+        adapter = new ListViewAdapter(todoItems, itemDao, this);
         listView.setAdapter(adapter);
     }
+
 }
+
