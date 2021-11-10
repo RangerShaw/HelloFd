@@ -10,5 +10,5 @@
 
 ## To-do List
 
-![avatar](https://github.com/RangerShaw/HelloFd/blob/master/fig/Todo%20List.png)
+![avatar](https://github.com/RangerShaw/HelloFd/blob/master/fig/Todo.png)
 
