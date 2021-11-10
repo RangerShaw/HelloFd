@@ -12,6 +12,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,11 +53,13 @@ public class ListViewAdapter extends BaseAdapter {
         CheckBox checkBox = view.findViewById(R.id.rb_check_button);
         Button clearBtn = view.findViewById(R.id.clear_btn);
 
-        int itemId = todoItems.get(position).id;
+        TodoItem item = todoItems.get(position);
+        int itemId = item.id;
 
         //显示事项文字
-        eventText.setText(todoItems.get(position).content);
-        checkBox.setChecked(todoItems.get(position).checked);
+        DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+        eventText.setText(formatter.format(item.date) + " " + item.content);
+        checkBox.setChecked(item.checked);
 
         //点击勾选框
         checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
